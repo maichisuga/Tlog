@@ -1,56 +1,80 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <title>サンプルHTML</title>
+  <meta charset="UTF-8">
+  <title>サンプルのHTML</title>
+  <style>
+    /* Newバッジのデザイン */
+    .new-badge {
+      background-color: #ff4757;
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 2px 5px;
+      border-radius: 4px;
+      margin-left: 8px;
+      display: none; /* 最初は隠しておく */
+    }
+    
+    /* 表の見た目を整える簡単なCSS */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 600px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 4px 8px;
+      font-size: 14px;
+    }
+  </style>
 </head>
 <body>
 
-    <p>日々の呟き。</p>
+  <p>日々の呟き。</p>
 
-    <table border="1">
-        <tr>
-            <th>日付</th>
-            <th>コメント</th>
-        </tr>
-        <tr>
-            <td>2026.06.13</td>
-            <td>実験レポートにひとつひとつ、コメントを入れている。100枚以上あるが、意味があると信じて。</td>
-        </tr>
+  <table>
+    <tr>
+      <th>日付</th>
+      <th>コメント</th>
+    </tr>
+    <tr class="news-row" data-date="2026-06-13">
+      <td>2026.06.13</td>
+      <td>
+        実験レポートにひとつひとつ、コメントを入れている。100枚以上あるが、意味があると信じて。<span class="new-badge">New!</span>
+      </td>
+    </tr>
     </table>
 
-    <script>
-  // 何日間「New」を表示するか設定（例：7日間）
-  const displayDays = 7; 
-  
-  // 今日の日付を取得し、時間をリセット（0時0分0秒にする）
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  <script>
+    const displayDays = 7; // 何日間「New」を表示するか
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-  // リストの各項目を取得して処理
-  const listItems = document.querySelectorAll('#news-list li');
+    const rows = document.querySelectorAll('.news-row');
 
-  listItems.forEach(item => {
-    // data-date属性から更新日を取得
-    const dateString = item.getAttribute('data-date');
-    if (!dateString) return;
+    rows.forEach(row => {
+      // data-date属性から日付を読み取る
+      const dateString = row.getAttribute('data-date');
+      if (!dateString) return;
 
-    const updateDate = new Date(dateString);
-    updateDate.setHours(0, 0, 0, 0);
+      const updateDate = new Date(dateString);
+      updateDate.setHours(0, 0, 0, 0);
 
-    // 日付の差分を計算（ミリ秒を日数に変換）
-    const diffTime = today.getTime() - updateDate.getTime();
-    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+      // 日付の引き算をする
+      const diffTime = today.getTime() - updateDate.getTime();
+      const diffDays = diffTime / (1000 * 60 * 60 * 24);
 
-    // 設定した日数以内なら「New」を表示
-    if (diffDays <= displayDays && diffDays >= 0) {
-      const badge = item.querySelector('.new-badge');
-      if (badge) {
-        badge.style.display = 'inline-block';
+      // 7日以内なら「New!」を表示する
+      if (diffDays <= displayDays && diffDays >= 0) {
+        const badge = row.querySelector('.new-badge');
+        if (badge) {
+          badge.style.display = 'inline-block';
+        }
       }
-    }
-  });
-</script>
+    });
+  </script>
 
 </body>
 </html>
